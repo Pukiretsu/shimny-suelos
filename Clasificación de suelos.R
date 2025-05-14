@@ -2,7 +2,7 @@ library(shiny)
 library(ggplot2)
 
 #Clasificación SUCS
-clasificar_SUCS <- function( tamiz4, tamiz200, LL, LP){
+clasificar_SUCS <- function( tamiz4, tamiz200, LL, LP, CU, CG){
   finos <- tamiz200
   grava <- 100 - tamiz4
   arena <- tamiz4 - tamiz200
@@ -50,11 +50,11 @@ clasificar_SUCS <- function( tamiz4, tamiz200, LL, LP){
       if (tipo_suelo == "grava") {
         is_clase <- "Grava"
         is_subclase <- "Limpia"
-        is_simbolo <- "GW o GP"
+        is_simbolo <- ifelse(CU > 4 && 1<CG<3, "GW", "GP")
       } else {
         is_clase <- "Arena"
         is_subclase <- "Limpia"
-        is_simbolo <- "SW o SP"
+        is_simbolo <- ifelse(CU > 6 && 1<CG<3, "SW", "SP")
       } 
     } else if (porcentaje_finos > 12) {
       if (tipo_suelo == "grava") {
@@ -212,7 +212,9 @@ server <- function(input, output) {
       d$tamiz4,
       d$tamiz200,
       d$LL,
-      d$LP
+      d$LP,
+      d$CU,
+      d$CG
     )
 
     data.frame(
