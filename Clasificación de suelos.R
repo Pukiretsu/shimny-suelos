@@ -49,11 +49,11 @@ clasificar_SUCS <- function( tamiz4, tamiz200, LL, LP, CU, CG){
     if (porcentaje_finos <= 5) {
       if (tipo_suelo == "grava") {
         is_clase <- "Grava"
-        is_subclase <- "Limpia"
+        is_subclase <- ifelse(CU > 4 && CG > 1 && CG < 3, "Bien Gradado", "Pobremente Gradado")
         is_simbolo <- ifelse(CU > 4 && CG > 1 && CG < 3, "GW", "GP")
       } else {
         is_clase <- "Arena"
-        is_subclase <- "Limpia"
+        is_subclase <- ifelse(CU > 4 && CG > 1 && CG < 3, "Bien Gradado", "Pobremente Gradado")
         is_simbolo <- ifelse(CU > 6 && CG > 1 && CG < 3, "SW", "SP")
       } 
     } else if (porcentaje_finos > 12) {
