@@ -239,7 +239,8 @@ server <- function(input, output) {
     ggplot(df, aes(x = tamiz, y = pasa)) +
       geom_line(color = "blue", linewidth = 1.2) +
       geom_point(size = 3, color = "red") +
-      scale_x_log10(breaks = sort(tamiz, decreasing = TRUE), labels = sort(tamiz, decreasing = TRUE)) +
+      scale_x_log10(breaks = tamiz, labels = tamiz) +
+      scale_x_reverse() +  # <-- Esto invierte el eje X
       labs(x = "Tamaño de partícula (mm) - Escala logarítmica",
            y = "% de suelo que pasa",
            title = "Curva Granulométrica") +
