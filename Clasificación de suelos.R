@@ -119,6 +119,7 @@ clasificar_AASHTO <- function(tamiz10, tamiz40, tamiz200, LL, LP) {
       } else {
         is_subgrupo <- ifelse (IP <= 10, "A-2-5", "A-2-7")
       }
+    }
   } else { # condición cuando es material limo arcilloso
     is_clasificacion_gral <- "Material limo o arcilloso (fino)"
     if (LL <= 40) {
@@ -253,7 +254,7 @@ server <- function(input, output) {
   output$AASHTO <- renderTable({
     req(datos())
     d <- datos()
-    
+
     class_AASHTO <- clasificar_AASHTO(
       d$tamiz10,
       d$tamiz40,
