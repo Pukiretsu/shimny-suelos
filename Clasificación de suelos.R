@@ -99,19 +99,43 @@ clasificar_AASHTO <- function(tamiz10, tamiz40, tamiz200, LL, LP) {
   
   # Clasificaciones principales según porcentaje de finos
   if (tamiz200 <= 35) {
-    if (LL <= 40 && IP <= 10) return("A-1-a")
-    else return("A-1-b")
-  } else if (tamiz200 <= 35 && tamiz10 <= 50 && tamiz40 <= 30) {
-    return("A-3")
-  } else if (tamiz200 <= 35 && tamiz10 <= 50) {
-    return("A-2-4 o A-2-5")
-  } else if (tamiz200 > 35) {
-    if (LL <= 40 && IP <= 10) return("A-4")
-    else if (LL <= 40 && IP > 10) return("A-6")
-    else return("A-7")
+    is_clasificacion_gral <- "Material Granular"
+    if (tamiz200 <= 10 && tamiz40 > 30 && tamiz10 > 50) { # A-3
+      is_grupo <- "A-3"
+      is_subgrupo <- "A-3"
+    } else if (tamiz200 <= 25) { # A-1
+      is_grupo <- "A-1"
+      if (tamiz10 <= 50 && tamiz40 < 30 && tamiz200 <= 15) {
+        is_subgrupo <- "A-1-a"
+      } else if (tamiz10 > 50 && tamiz40 <= 50 && tamiz200 <= 25) {
+        is_subgrupo <- "A-1-b"
+      } else {
+        is_subgrupo <- "Sin clasificar"
+      }
+    } else if (tamiz200 <= 35) { # A-2
+      is_grupo <- "A-2"
+      if (LL <= 40) {
+        is_subgrupo <- ifelse (IP <= 10, "A-2-4", "A-2-6")
+      } else {
+        is_subgrupo <- ifelse (IP <= 10, "A-2-5", "A-2-7")
+      }
+  } else { # condición cuando es material limo arcilloso
+    is_clasificacion_gral <- "Material limo o arcilloso (fino)"
+    if (LL <= 40) {
+      is_grupo <- ifelse(IP <= 10, "A-4", "A-6")
+      is_subgrupo <- ifelse(IP <= 10, "A-4", "A-6")
+    } else {
+      if(IP <= 10) {
+      is_grupo <- "A-5"
+      is_subgrupo <- "A-5"
+      } else {
+        is_grupo <- "A-7"
+        comparacion <- LL - 30
+        is_subgrupo <- ifelse(IP <= comparacion, "A-7-5", "A-7-6")
+      }
+    }
   }
-  
-  return("No clasificado AASHTO")
+  return(list(clasificacion_gral = is_clasificacion_gral, grupo = is_grupo, subgrupo = is_subgrupo)
 }
 
 # UI
@@ -225,6 +249,26 @@ server <- function(input, output) {
     )
   })
   
+    # Tabla AASHTO
+  output$AASHTO <- renderTable({
+    req(datos())
+    d <- datos()
+    
+    class_AASHTO <- clasificar_AASHTO(
+      d$tamiz10,
+      d$tamiz40,
+      d$tamiz200,
+      d$LL,
+      d$LP
+    )
+
+    data.frame(
+      'Clasificación General' = class_AASHTO$clasificacion_gral,
+      'Grupo' = class_AASHTO$grupo,
+      'Subgrupo' = class_AASHTO$subgrupo
+    )
+  })
+
   #Grafico de la curva
   output$curva <- renderPlot({
     
