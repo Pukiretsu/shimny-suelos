@@ -161,7 +161,8 @@ ui <- fluidPage(
               tableOutput("SUCS"),  
               h3("Clasificación AASHTO"),
               tableOutput("AASHTO"),
-              plotOutput("curva")
+              plotOutput("curva"),
+              textOutput("cu_cg")
     )
   )
 )
@@ -170,6 +171,20 @@ ui <- fluidPage(
 server <- function(input, output) {
   
   datos <- eventReactive(input$generate, {
+    tamiz <- c(37.5, 25, 19, 12.7 ,4.75, 2.36, 0.425, 0.075) #mm
+    pasa <- c(input$tamiz1_1_2, 
+              input$tamiz1, 
+              input$tamiz3_4, 
+              input$tamiz1_2, 
+              input$tamiz4, 
+              input$tamiz10, 
+              input$tamiz40, 
+              input$tamiz200)
+
+    porcentajes_a_interpolar <- c(10, 30, 60)
+    interpolados <- approx(pasa, tamiz, xout = porcentajes_a_interpolar)
+    cu_value <- interpolados$y[3]/interpolados$y[1]
+    cg_value <- interpolados$y[2]^2/(interpolados$y[1]*interpolados$y[3])
     list(
       tamiz1_1_2 = input$tamiz1_1_2,
       tamiz1 = input$tamiz1,
@@ -180,7 +195,12 @@ server <- function(input, output) {
       tamiz40 = input$tamiz40,
       tamiz200 = input$tamiz200,
       LL = input$LL,
-      LP = input$LP
+      LP = input$LP,
+      D10 = interpolados$y[1],
+      D30 = interpolados$y[2],
+      D60 = interpolados$y[3],
+      CU = cu_value,
+      CG = cg_value
     )
   })
   
@@ -208,9 +228,6 @@ server <- function(input, output) {
     
     req(datos())
     d <- datos()  
-    
-
-
 
     tamiz <- c(37.5, 25, 19, 12.7 ,4.75, 2.36, 0.425, 0.075) #mm
     pasa <- c( d$tamiz1_1_2, d$tamiz1, d$tamiz3_4, d$tamiz1_2, d$tamiz4, d$tamiz10, d$tamiz40, d$tamiz200)
@@ -227,7 +244,14 @@ server <- function(input, output) {
            title = "Curva Granulométrica") +
       theme_minimal(base_size = 14)
   })
-  
+
+  output$cu_cg <- renderText({
+    req(datos())
+    d <- datos() 
+
+    paste0("Coeficiente de uniformidad: ", d$CU, "\n",
+           "Coeficiente de gradación: ", d$CG)
+  }) 
 }
 
 # Run the application
