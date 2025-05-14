@@ -249,7 +249,7 @@ server <- function(input, output) {
     req(datos())
     d <- datos() 
 
-    paste0("D10: ", d$D10, ", D30: " d$D30, ", D60: " d$D60, "\n",
+    paste0("D10: ", d$D10, ", D30: ", d$D30, ", D60: ", d$D60, "\n",
            "Coeficiente de uniformidad: ", d$CU, "\n",
            "Coeficiente de gradación: ", d$CG)
   }) 
