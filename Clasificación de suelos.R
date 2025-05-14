@@ -159,10 +159,10 @@ ui <- fluidPage(
               h2("Resultados"),
               h3("Clasificación SUCS"),
               tableOutput("SUCS"),  
-              verbatimTextOutput("cu_cg")
+              verbatimTextOutput("cu_cg"),
               h3("Clasificación AASHTO"),
               tableOutput("AASHTO"),
-              plotOutput("curva"),
+              plotOutput("curva")
     )
   )
 )
