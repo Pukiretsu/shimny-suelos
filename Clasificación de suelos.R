@@ -136,7 +136,8 @@ clasificar_AASHTO <- function(tamiz10, tamiz40, tamiz200, LL, LP) {
       }
     }
   }
-  return(list(clasificacion_gral = is_clasificacion_gral, grupo = is_grupo, subgrupo = is_subgrupo)
+
+  return(list(clasificacion_gral = is_clasificacion_gral, grupo = is_grupo, subgrupo = is_subgrupo))
 }
 
 # UI
