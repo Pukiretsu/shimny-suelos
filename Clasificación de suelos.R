@@ -162,7 +162,7 @@ ui <- fluidPage(
               h3("Clasificación AASHTO"),
               tableOutput("AASHTO"),
               plotOutput("curva"),
-              textOutput("cu_cg")
+              verbatimTextOutput("cu_cg")
     )
   )
 )
