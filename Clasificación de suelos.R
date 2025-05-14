@@ -159,10 +159,10 @@ ui <- fluidPage(
               h2("Resultados"),
               h3("Clasificación SUCS"),
               tableOutput("SUCS"),  
+              verbatimTextOutput("cu_cg")
               h3("Clasificación AASHTO"),
               tableOutput("AASHTO"),
               plotOutput("curva"),
-              verbatimTextOutput("cu_cg")
     )
   )
 )
@@ -249,7 +249,8 @@ server <- function(input, output) {
     req(datos())
     d <- datos() 
 
-    paste0("Coeficiente de uniformidad: ", d$CU, "\n",
+    paste0("D10: ", d$D10, ", D30: " d$D30, ", D60: " d$D60, "\n",
+           "Coeficiente de uniformidad: ", d$CU, "\n",
            "Coeficiente de gradación: ", d$CG)
   }) 
 }
