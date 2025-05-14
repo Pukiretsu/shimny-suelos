@@ -231,16 +231,15 @@ server <- function(input, output) {
     req(datos())
     d <- datos()  
 
-    tamiz <- c(37.5, 25, 19, 12.7 ,4.75, 2.36, 0.425, 0.075) #mm
-    pasa <- c( d$tamiz1_1_2, d$tamiz1, d$tamiz3_4, d$tamiz1_2, d$tamiz4, d$tamiz10, d$tamiz40, d$tamiz200)
-    
+    tamiz <- c(37.5, 25, 19, 12.7, 4.75, 2.36, 0.425, 0.075) # mm
+    pasa <- c(d$tamiz1_1_2, d$tamiz1, d$tamiz3_4, d$tamiz1_2, d$tamiz4, d$tamiz10, d$tamiz40, d$tamiz200)
+
     df <- data.frame(tamiz, pasa)
-    
+
     ggplot(df, aes(x = tamiz, y = pasa)) +
       geom_line(color = "blue", linewidth = 1.2) +
       geom_point(size = 3, color = "red") +
-      scale_x_log10(breaks = tamiz, labels = tamiz) +
-      scale_y_reverse() +
+      scale_x_log10(breaks = sort(tamiz, decreasing = FALSE), labels = sort(tamiz, decreasing = FALSE)) +
       labs(x = "Tamaño de partícula (mm) - Escala logarítmica",
            y = "% de suelo que pasa",
            title = "Curva Granulométrica") +
