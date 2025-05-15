@@ -6,11 +6,9 @@ services:
       - --providers.docker=true
       - --providers.docker.exposedbydefault=false
       - --entrypoints.web.address=:80
-      - --api.dashboard=true
-      - --api.insecure=true
     ports:
       - "80:80"
-      - "8080:8080"  # Para el dashboard de Traefik
+      #- "8080:8080"  # Para el dashboard de Traefik
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
