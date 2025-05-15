@@ -1,22 +1,20 @@
-# R base on shiny
-FROM rocker/shiny
-
-RUN mkdir /home/shiny-app
-
 # Base R Shiny image
 FROM rocker/shiny
 
-# Make a directory in the container
-RUN mkdir /home/shiny-app
+# Crear directorio de la app
+RUN mkdir -p /home/shiny-app
 
-# Install R dependencies
+# Instalar dependencias
 RUN R -e "install.packages(c('dplyr', 'ggplot2', 'gapminder'))"
 
-# Copy the Shiny app code
+# Copiar la aplicación al contenedor
 COPY app.R /home/shiny-app/app.R
 
-# Expose the application port
-EXPOSE 8180
+# Establecer el directorio de trabajo
+WORKDIR /home/shiny-app
 
-# Run the R Shiny app
-CMD {Rscript /home/shiny-app/app.R}
+# Exponer el puerto 3838 (que es el puerto por defecto de Shiny)
+EXPOSE 3838
+
+# Ejecutar la aplicación
+CMD ["R", "-e", "shiny::runApp('/home/shiny-app', host='0.0.0.0', port=3838)"]
