@@ -111,7 +111,7 @@ COPY shiny-server.conf  /etc/shiny-server/shiny-server.conf
 
 # copy the contents of app folder to image
 
-COPY ./app /srv/shiny-server/app/
+COPY ./app.r /srv/shiny-server/app/
 
 
 
