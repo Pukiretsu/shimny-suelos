@@ -1,0 +1,50 @@
+services:
+  traefik:
+    image: traefik:v2.5
+    container_name: traefik
+    command:
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --certificatesresolvers.letsencrypt.acme.email=cr3pym4st3r@gmail.com
+      - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
+      - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
+      - --entryPoints.web.forwardedHeaders.insecure=true
+      - --entryPoints.websecure.forwardedHeaders.insecure=true
+      - --serversTransport.forwardingTimeouts.dialTimeout=30s
+      - --serversTransport.forwardingTimeouts.responseHeaderTimeout=30s
+    ports:
+      - "80:80"    # HTTP (redirige a HTTPS)
+      - "443:443"  # HTTPS
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./letsencrypt:/letsencrypt
+    networks:
+      - webnet
+  shiny-app:
+    build: 
+      context: .
+      dockerfile: dockerfile
+      labels:
+        - "traefik.enable=true"
+         # Para la IP del VPS
+        - "traefik.http.routers.web-ip.rule=Host(`64.23.166.216`)"
+        - "traefik.http.routers.web-ip.entrypoints=websecure"
+        - "traefik.http.routers.web-ip.tls.certresolver=letsencrypt"
+
+        - "traefik.http.routers.web-ip-http.rule=Host(`64.23.166.216`)"
+        - "traefik.http.routers.web-ip-http.entrypoints=web"
+        - "traefik.http.routers.web-ip-http.middlewares=redirect-to-https"
+      
+        # Puerto interno de Shiny
+        - "traefik.http.services.web.loadbalancer.server.port=80"
+      depends_on:
+      - traefik
+
+volumes:
+  letsencrypt:
+
+networks:
+  webnet:
+    driver: bridge
